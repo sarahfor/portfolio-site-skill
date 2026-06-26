@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Square placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#eef6ff"/>
+      <stop offset="100%" stop-color="#dae9fb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <rect x="120" y="120" width="960" height="960" rx="48" fill="none" stroke="#96b8dd" stroke-width="10" stroke-dasharray="20 14"/>
+  <path d="M220 860l210-250 155 170 180-230 215 310H220z" fill="#bdd4eb"/>
+  <circle cx="400" cy="370" r="84" fill="#bdd4eb"/>
+  <text x="600" y="1015" font-family="Georgia, Times New Roman, serif" font-size="44" text-anchor="middle" fill="#56708b">Replace with gallery image</text>
+</svg>

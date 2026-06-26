@@ -1,0 +1,8 @@
+interface:
+  display_name: "Portfolio Site"
+  short_description: "Beginner form to personal website"
+  brand_color: "#3778C2"
+  default_prompt: "Use $portfolio-site to open Build a Personal Website, generate my copy-paste intake link, and build a polished personal website."
+
+policy:
+  allow_implicit_invocation: true
