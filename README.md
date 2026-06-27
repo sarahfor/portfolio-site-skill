@@ -10,6 +10,7 @@ A reusable skill for building a polished one-page personal website from a beginn
 - Static HTML site generator
 - Upload-style fields for resume and images
 - A reusable portfolio template with profile, links, work cards, gallery, and contact sections
+- Cross-platform form opener for macOS, Linux, and Windows-style shells
 
 ## Install for Codex
 
@@ -27,7 +28,7 @@ Run the form:
 ~/.codex/skills/portfolio-site/scripts/open_intake_form.sh
 ```
 
-Fill out the form, copy the generated link, and paste it into Codex.
+Fill out the form, copy the generated link, and paste it into Codex. If your computer does not open the browser automatically, the script will print the form file path so you can open it manually.
 
 ## Install for Claude
 
@@ -46,4 +47,4 @@ Run the form:
 ~/.claude/skills/claude-portfolio-site/scripts/open_intake_form.sh
 ```
 
-Fill out the form, copy the generated link, and paste it into Claude.
+Fill out the form, copy the generated link, and paste it into Claude. If your computer does not open the browser automatically, the script will print the form file path so you can open it manually.
