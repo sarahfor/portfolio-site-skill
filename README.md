@@ -30,6 +30,8 @@ Run the form:
 
 Fill out the form, copy the generated link, and paste it into Codex. If your computer does not open the browser automatically, the script will print the form file path so you can open it manually.
 
+Once the site is generated, you will still need to chat with your LLM to customize it. Have fun!
+
 ## Install for Claude
 
 Copy the Claude skill folder:
@@ -48,3 +50,5 @@ Run the form:
 ```
 
 Fill out the form, copy the generated link, and paste it into Claude. If your computer does not open the browser automatically, the script will print the form file path so you can open it manually.
+
+Once the site is generated, you will still need to chat with your LLM to customize it. Have fun!
