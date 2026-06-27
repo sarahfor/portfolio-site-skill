@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build a Personal Website</title>
+    <style>
+        :root {
+            --site-bg: #f5f7fb;
+            --surface: #ffffff;
+            --surface-soft: #f7fbff;
+            --text-primary: #1a1a1a;
+            --text-muted: #4d5764;
+            --border-soft: rgba(15, 23, 42, 0.1);
+            --accent: #3778c2;
+            --accent-strong: #2f70dc;
+            --accent-soft: rgba(79, 172, 254, 0.14);
+            --shadow-soft: 0 14px 36px rgba(15, 23, 42, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(79, 172, 254, 0.12), transparent 28%),
+                linear-gradient(180deg, #f7f9fc 0%, var(--site-bg) 100%);
+            color: var(--text-primary);
+            line-height: 1.55;
+        }
+
+        .hero {
+            min-height: 260px;
+            display: grid;
+            align-items: end;
+            padding: 4rem 1rem 2.2rem;
+            color: #ffffff;
+            background:
+                linear-gradient(135deg, rgba(0, 0, 0, 0.44), rgba(0, 20, 40, 0.24)),
+                radial-gradient(circle at 30% 20%, rgba(143, 211, 255, 0.32), transparent 26%),
+                linear-gradient(135deg, #08121e 0%, #10243a 55%, #07131d 100%);
+        }
+
+        .hero-inner,
+        main,
+        .footer {
+            width: min(100% - 2rem, 980px);
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            width: fit-content;
+            padding: 0.42rem 0.76rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            background: rgba(6, 19, 35, 0.28);
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            backdrop-filter: blur(12px);
+        }
+
+        h1 {
+            max-width: 780px;
+            margin: 1rem 0 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(2.3rem, 6vw, 4.5rem);
+            font-weight: 300;
+            line-height: 1.08;
+            letter-spacing: 0;
+        }
+
+        h1 span {
+            color: transparent;
+            background: linear-gradient(90deg, #ffffff, #8fd3ff, #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            font-style: italic;
+        }
+
+        main {
+            display: grid;
+            gap: 1rem;
+            padding: 1.2rem 0 3rem;
+        }
+
+        .intro-card,
+        fieldset,
+        .result-card {
+            border: 1px solid rgba(79, 172, 254, 0.14);
+            border-radius: 14px;
+            background: linear-gradient(145deg, #ffffff 0%, #f7fbff 100%);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .intro-card {
+            padding: 1.2rem 1.35rem;
+        }
+
+        .intro-card p {
+            margin: 0.5rem 0 0;
+            color: var(--text-muted);
+        }
+
+        .steps {
+            display: grid;
+            gap: 0.55rem;
+            margin: 1rem 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .steps li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.7rem;
+            align-items: start;
+            color: #263343;
+        }
+
+        .steps span {
+            width: 1.8rem;
+            height: 1.8rem;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        fieldset {
+            margin: 0;
+            padding: 1.25rem 1.35rem 1.35rem;
+        }
+
+        fieldset::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        legend {
+            float: left;
+            width: 100%;
+            margin: 0 0 0.75rem;
+            padding: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 1.32rem;
+            line-height: 1.12;
+            color: #111827;
+        }
+
+        .help {
+            margin: 0.2rem 0 1rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        label {
+            display: grid;
+            gap: 0.38rem;
+            color: #263343;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+
+        .wide {
+            grid-column: 1 / -1;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            border: 1px solid rgba(66, 133, 244, 0.18);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.86);
+            color: var(--text-primary);
+            font: inherit;
+            font-weight: 500;
+            padding: 0.78rem 0.86rem;
+            outline: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+        }
+
+        textarea {
+            min-height: 112px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: rgba(79, 172, 254, 0.68);
+            box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.14);
+        }
+
+        .mini {
+            color: #6b7280;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+
+        .asset-note {
+            display: grid;
+            gap: 0.45rem;
+            margin: 0 0 1rem;
+            padding: 0.95rem 1rem;
+            border: 1px solid rgba(79, 172, 254, 0.16);
+            border-radius: 14px;
+            background: rgba(247, 251, 255, 0.86);
+            color: #334155;
+        }
+
+        .asset-note strong {
+            color: #1f2937;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.9rem;
+        }
+
+        .upload-card {
+            position: relative;
+            display: grid;
+            gap: 0.5rem;
+            min-height: 148px;
+            padding: 1rem;
+            border: 1.5px dashed rgba(55, 120, 194, 0.32);
+            border-radius: 16px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 251, 255, 0.86));
+            color: #263343;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .upload-card:hover,
+        .upload-card:focus-within,
+        .upload-card.has-file {
+            transform: translateY(-2px);
+            border-color: rgba(79, 172, 254, 0.7);
+            background: #ffffff;
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.07);
+        }
+
+        .upload-card input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-title {
+            font-weight: 800;
+        }
+
+        .upload-body {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .upload-file {
+            align-self: end;
+            width: fit-content;
+            max-width: 100%;
+            padding: 0.36rem 0.58rem;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 800;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .asset-list {
+            display: none;
+            margin: 0;
+            padding: 0.9rem 1rem;
+            border: 1px solid rgba(79, 172, 254, 0.16);
+            border-radius: 14px;
+            background: rgba(247, 251, 255, 0.86);
+            color: #334155;
+            font-size: 0.92rem;
+        }
+
+        .asset-list.is-visible {
+            display: block;
+        }
+
+        .asset-list ul {
+            margin: 0.55rem 0 0;
+            padding-left: 1.2rem;
+        }
+
+        .actions {
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 1rem 0;
+            background: linear-gradient(180deg, rgba(245, 247, 251, 0), rgba(245, 247, 251, 0.96) 22%, rgba(245, 247, 251, 0.98));
+            backdrop-filter: blur(12px);
+        }
+
+        button {
+            border: 0;
+            border-radius: 999px;
+            padding: 0.82rem 1.1rem;
+            font: inherit;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: linear-gradient(180deg, #4aa8ff, var(--accent-strong));
+            color: #ffffff;
+            box-shadow: 0 16px 32px rgba(47, 112, 220, 0.22);
+        }
+
+        .secondary {
+            border: 1px solid rgba(79, 172, 254, 0.2);
+            background: rgba(255, 255, 255, 0.72);
+            color: #263343;
+        }
+
+        .result-card {
+            display: none;
+            padding: 1.45rem;
+        }
+
+        .result-card.is-visible {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .copy-box {
+            position: relative;
+        }
+
+        .copy-box textarea {
+            min-height: 96px;
+            padding-right: 1rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.82rem;
+            word-break: break-all;
+        }
+
+        .status {
+            min-height: 1.3rem;
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .footer {
+            padding: 0 0 2rem;
+            color: #6b7280;
+            font-size: 0.86rem;
+        }
+
+        @media (max-width: 720px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+
+            fieldset,
+            .intro-card,
+            .result-card {
+                padding: 1.1rem;
+                border-radius: 16px;
+            }
+
+            .actions {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-inner">
+            <div class="eyebrow">Website builder intake</div>
+            <h1>Build a <span>Personal Website</span></h1>
+        </div>
+    </header>
+
+    <main>
+        <section class="intro-card">
+            <strong>No code needed.</strong>
+            <p>Answer what you can. When you click generate, this form creates one intake link. Copy that link and paste it into Claude with: “Use this to build my website.”</p>
+            <ul class="steps">
+                <li><span>1</span><div>Fill out the form.</div></li>
+                <li><span>2</span><div>Click “Generate my Claude link.”</div></li>
+                <li><span>3</span><div>Paste the generated link into Claude.</div></li>
+            </ul>
+        </section>
+
+        <form id="intakeForm">
+            <fieldset>
+                <legend>Basics</legend>
+                <p class="help">This becomes the hero and profile section.</p>
+                <div class="grid">
+                    <label>Name
+                        <input name="name" autocomplete="name" placeholder="Jordan Lee" required>
+                    </label>
+                    <label>One-line role
+                        <input name="role" placeholder="AI workflow designer and educator">
+                    </label>
+                    <label class="wide">Who should this site attract?
+                        <input name="audience" placeholder="Founders, operators, and teams adopting AI">
+                    </label>
+                    <label class="wide">Short tagline
+                        <input name="tagline" placeholder="I help teams turn AI curiosity into practical workflow changes.">
+                    </label>
+                    <label class="wide">About paragraph
+                        <textarea name="about" placeholder="In 2-4 sentences, explain who you are, what you do, and what people should remember."></textarea>
+                    </label>
+                    <label>Contact email
+                        <input name="contact_email" type="email" placeholder="hello@example.com">
+                    </label>
+                    <label>Preferred call to action
+                        <select name="cta_primary">
+                            <option>Start a conversation</option>
+                            <option>Book a workshop</option>
+                            <option>View my resume</option>
+                            <option>Invite me to speak</option>
+                            <option>Hire me</option>
+                        </select>
+                    </label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Links</legend>
+                <p class="help">Paste public profile links. Upload your resume in the next section so Claude can add it to the site assets.</p>
+                <div class="grid">
+                    <label>LinkedIn
+                        <input name="linkedin" placeholder="https://linkedin.com/in/username">
+                    </label>
+                    <label>Instagram
+                        <input name="instagram" placeholder="https://instagram.com/username">
+                    </label>
+                    <label>Website or portfolio
+                        <input name="website" placeholder="https://example.com">
+                    </label>
+                    <label>GitHub
+                        <input name="github" placeholder="https://github.com/username">
+                    </label>
+                    <label>Newsletter / Substack
+                        <input name="newsletter" placeholder="https://example.substack.com">
+                    </label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Resume</legend>
+                <div class="asset-note">
+                    <strong>Upload a resume or CV if you want it linked on the site.</strong>
+                    <span>The form will reference the selected filename. After Claude creates the site, add the same file to the generated site’s <strong>assets</strong> folder.</span>
+                </div>
+                <div class="upload-grid">
+                    <label class="upload-card">
+                        <span class="upload-title">Resume / CV</span>
+                        <span class="upload-body">PDF is best. DOC, DOCX, and plain text files also work.</span>
+                        <span class="upload-file" data-file-label="resume">Choose file</span>
+                        <input name="resume" type="file" accept=".pdf,.doc,.docx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+                    </label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Proof</legend>
+                <p class="help">These become partner logos and selected work cards. Keep each item short.</p>
+                <div class="grid">
+                    <label class="wide">Clients, partners, employers, or credibility signals
+                        <input name="partners" placeholder="Client 1, Project 2, Community 3, Publication 4">
+                        <span class="mini">Separate with commas.</span>
+                    </label>
+                    <label>Featured work 1 title
+                        <input name="work1_title" placeholder="Flagship program or press title">
+                    </label>
+                    <label>Featured work 1 link
+                        <input name="work1_url" placeholder="https://...">
+                    </label>
+                    <label>Featured work 1 source
+                        <input name="work1_source" placeholder="Organization or publication">
+                    </label>
+                    <label>Featured work 1 type
+                        <input name="work1_type" placeholder="Program build, Press, Talk, Project">
+                    </label>
+                    <label class="wide">Featured work 1 summary
+                        <textarea name="work1_summary" placeholder="One sentence about why this work matters."></textarea>
+                    </label>
+                    <label>Featured work 2 title
+                        <input name="work2_title">
+                    </label>
+                    <label>Featured work 2 link
+                        <input name="work2_url">
+                    </label>
+                    <label>Featured work 3 title
+                        <input name="work3_title">
+                    </label>
+                    <label>Featured work 3 link
+                        <input name="work3_url">
+                    </label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Images</legend>
+                <div class="asset-note">
+                    <strong>Upload images here, then keep the files handy.</strong>
+                    <span>The form will reference the selected filenames. After Claude creates the site, add those same image files to the generated site’s <strong>assets</strong> folder so they appear on the page.</span>
+                </div>
+                <div class="upload-grid">
+                    <label class="upload-card">
+                        <span class="upload-title">Portrait / headshot</span>
+                        <span class="upload-body">Use a clear portrait for the profile card and AI-inspector modal.</span>
+                        <span class="upload-file" data-file-label="profile_image">Choose image</span>
+                        <input name="profile_image" type="file" accept="image/*">
+                    </label>
+                    <label class="upload-card">
+                        <span class="upload-title">Gallery image 1</span>
+                        <span class="upload-body">Workshop, event, client work, screenshot, or in-the-room moment.</span>
+                        <span class="upload-file" data-file-label="gallery1">Choose image</span>
+                        <input name="gallery1" type="file" accept="image/*">
+                    </label>
+                    <label class="upload-card">
+                        <span class="upload-title">Gallery image 2</span>
+                        <span class="upload-body">Add another visual proof point.</span>
+                        <span class="upload-file" data-file-label="gallery2">Choose image</span>
+                        <input name="gallery2" type="file" accept="image/*">
+                    </label>
+                    <label class="upload-card">
+                        <span class="upload-title">Gallery image 3</span>
+                        <span class="upload-body">Optional, but helpful for making the page feel lived-in.</span>
+                        <span class="upload-file" data-file-label="gallery3">Choose image</span>
+                        <input name="gallery3" type="file" accept="image/*">
+                    </label>
+                    <label class="upload-card">
+                        <span class="upload-title">Gallery image 4</span>
+                        <span class="upload-body">Optional final image for the moving gallery.</span>
+                        <span class="upload-file" data-file-label="gallery4">Choose image</span>
+                        <input name="gallery4" type="file" accept="image/*">
+                    </label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Signature section</legend>
+                <p class="help">This powers a visual signature section. Use it to add the trend, belief, result, or opportunity you want people to remember.</p>
+                <div class="grid">
+                    <label>Section title
+                        <input name="future_title" placeholder="Add Your Signature Insight">
+                    </label>
+                    <label>Short subtitle
+                        <input name="future_subtitle" placeholder="Use this section to make your point visually.">
+                    </label>
+                    <label class="wide">Main insight
+                        <textarea name="future_lead" placeholder="What do you want people to understand about your field right now?"></textarea>
+                    </label>
+                </div>
+            </fieldset>
+
+            <div class="actions">
+                <button type="button" class="secondary" id="resetButton">Clear</button>
+                <button type="submit" class="primary">Generate my Claude link</button>
+            </div>
+        </form>
+
+        <section class="result-card" id="resultCard" aria-live="polite">
+            <div>
+                <strong>Your Claude intake link is ready.</strong>
+                <p class="help">Copy this whole link and paste it into Claude. Claude will decode it and build your website.</p>
+            </div>
+            <div class="copy-box">
+                <textarea id="intakeLink" readonly></textarea>
+            </div>
+            <div class="asset-list" id="assetList"></div>
+            <div class="actions" style="position: static; padding: 0; background: transparent;">
+                <button type="button" class="secondary" id="downloadJsonButton">Download JSON backup</button>
+                <button type="button" class="primary" id="copyButton">Copy link</button>
+            </div>
+            <div class="status" id="status"></div>
+        </section>
+    </main>
+
+    <div class="footer">
+        <p>This form runs in your browser. It does not send your answers anywhere.</p>
+    </div>
+
+    <script>
+        const form = document.getElementById("intakeForm");
+        const resultCard = document.getElementById("resultCard");
+        const intakeLinkField = document.getElementById("intakeLink");
+        const assetList = document.getElementById("assetList");
+        const status = document.getElementById("status");
+        let latestAnswers = null;
+
+        function value(name) {
+            return new FormData(form).get(name)?.toString().trim() || "";
+        }
+
+        function splitList(raw) {
+            return raw.split(",").map((item) => item.trim()).filter(Boolean);
+        }
+
+        function safeFileName(name) {
+            return name
+                .trim()
+                .replace(/\s+/g, "-")
+                .replace(/[^a-zA-Z0-9._-]/g, "")
+                .replace(/-+/g, "-");
+        }
+
+        function fileFor(name) {
+            const input = form.elements[name];
+            return input?.files?.[0] || null;
+        }
+
+        function assetPathFor(name) {
+            const file = fileFor(name);
+            return file ? `assets/${safeFileName(file.name)}` : "";
+        }
+
+        function selectedAssetEntries() {
+            const labels = {
+                profile_image: "Portrait / headshot",
+                resume: "Resume / CV",
+                gallery1: "Gallery image 1",
+                gallery2: "Gallery image 2",
+                gallery3: "Gallery image 3",
+                gallery4: "Gallery image 4"
+            };
+            return Object.entries(labels)
+                .map(([name, label]) => {
+                    const file = fileFor(name);
+                    return file ? { label, fileName: safeFileName(file.name), path: `assets/${safeFileName(file.name)}` } : null;
+                })
+                .filter(Boolean);
+        }
+
+        function workItem(index) {
+            const title = value(`work${index}_title`);
+            const url = value(`work${index}_url`);
+            const source = value(`work${index}_source`);
+            const type = value(`work${index}_type`);
+            const summary = value(`work${index}_summary`);
+            if (!title && !url && !source && !summary) return null;
+            return {
+                title,
+                url,
+                source,
+                type,
+                summary,
+                cta: "View work"
+            };
+        }
+
+        function compactObject(object) {
+            if (Array.isArray(object)) {
+                return object.map(compactObject).filter((item) => {
+                    if (item == null) return false;
+                    if (typeof item === "object" && !Array.isArray(item)) return Object.keys(item).length > 0;
+                    return item !== "";
+                });
+            }
+            const output = {};
+            Object.entries(object).forEach(([key, val]) => {
+                if (val == null || val === "") return;
+                if (Array.isArray(val)) {
+                    const cleaned = compactObject(val);
+                    if (cleaned.length) output[key] = cleaned;
+                    return;
+                }
+                if (typeof val === "object") {
+                    const cleaned = compactObject(val);
+                    if (Object.keys(cleaned).length) output[key] = cleaned;
+                    return;
+                }
+                output[key] = val;
+            });
+            return output;
+        }
+
+        function toBase64Url(value) {
+            const bytes = new TextEncoder().encode(value);
+            let binary = "";
+            bytes.forEach((byte) => binary += String.fromCharCode(byte));
+            return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+        }
+
+        function buildAnswers() {
+            const workItems = [1, 2, 3].map(workItem).filter(Boolean);
+            const galleryImages = [1, 2, 3, 4]
+                .map((index) => assetPathFor(`gallery${index}`))
+                .filter(Boolean)
+                .map((path, index) => ({ path, alt: `Gallery image ${index + 1}` }));
+
+            const answers = {
+                name: value("name"),
+                role: value("role"),
+                audience: value("audience"),
+                tagline: value("tagline"),
+                about: value("about"),
+                contact_email: value("contact_email"),
+                profile_image: assetPathFor("profile_image"),
+                links: {
+                    linkedin: value("linkedin"),
+                    instagram: value("instagram"),
+                    resume: assetPathFor("resume"),
+                    website: value("website"),
+                    github: value("github"),
+                    newsletter: value("newsletter")
+                },
+                partners: splitList(value("partners")),
+                cta: {
+                    primary: value("cta_primary"),
+                    supporting_line: "Share the work you are trying to move."
+                },
+                work_items: workItems,
+                gallery_images: galleryImages,
+                future_report: {
+                    title: value("future_title"),
+                    subtitle: value("future_subtitle"),
+                    lead: value("future_lead")
+                },
+                image_asset_files: selectedAssetEntries()
+            };
+            return compactObject(answers);
+        }
+
+        function renderAssetInstructions(answers) {
+            const files = answers.image_asset_files || [];
+            if (!files.length) {
+                assetList.classList.remove("is-visible");
+                assetList.innerHTML = "";
+                return;
+            }
+            const items = files
+                .map((item) => `<li><strong>${item.label}:</strong> ${item.fileName}</li>`)
+                .join("");
+            assetList.innerHTML = `
+                <strong>After Claude builds the site, add these files to the generated <code>assets</code> folder:</strong>
+                <ul>${items}</ul>
+            `;
+            assetList.classList.add("is-visible");
+        }
+
+        function showLink(answers) {
+            latestAnswers = answers;
+            const encoded = toBase64Url(JSON.stringify(answers));
+            const link = `claude-portfolio-site://build?answers=${encoded}`;
+            intakeLinkField.value = link;
+            renderAssetInstructions(answers);
+            resultCard.classList.add("is-visible");
+            resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        document.querySelectorAll('.upload-card input[type="file"]').forEach((input) => {
+            const card = input.closest(".upload-card");
+            const label = document.querySelector(`[data-file-label="${input.name}"]`);
+
+            function updateLabel() {
+                const file = input.files?.[0];
+                card.classList.toggle("has-file", Boolean(file));
+                label.textContent = file ? safeFileName(file.name) : (input.name === "resume" ? "Choose file" : "Choose image");
+            }
+
+            input.addEventListener("change", updateLabel);
+            card.addEventListener("dragover", (event) => {
+                event.preventDefault();
+                card.classList.add("has-file");
+            });
+            card.addEventListener("dragleave", () => {
+                if (!input.files?.length) card.classList.remove("has-file");
+            });
+            card.addEventListener("drop", (event) => {
+                event.preventDefault();
+                if (event.dataTransfer?.files?.length) {
+                    input.files = event.dataTransfer.files;
+                    updateLabel();
+                }
+            });
+        });
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            showLink(buildAnswers());
+        });
+
+        document.getElementById("copyButton").addEventListener("click", async () => {
+            await navigator.clipboard.writeText(intakeLinkField.value);
+            status.textContent = "Copied. Paste it into Claude.";
+        });
+
+        document.getElementById("downloadJsonButton").addEventListener("click", () => {
+            if (!latestAnswers) latestAnswers = buildAnswers();
+            const blob = new Blob([JSON.stringify(latestAnswers, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "portfolio-site-answers.json";
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById("resetButton").addEventListener("click", () => {
+            form.reset();
+            document.querySelectorAll(".upload-card").forEach((card) => card.classList.remove("has-file"));
+            document.querySelectorAll("[data-file-label]").forEach((label) => {
+                label.textContent = label.dataset.fileLabel === "resume" ? "Choose file" : "Choose image";
+            });
+            resultCard.classList.remove("is-visible");
+            assetList.classList.remove("is-visible");
+            assetList.innerHTML = "";
+            latestAnswers = null;
+            status.textContent = "";
+        });
+    </script>
+</body>
+</html>
