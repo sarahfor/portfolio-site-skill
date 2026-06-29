@@ -605,7 +605,7 @@
         <section class="result-card" id="resultCard" aria-live="polite">
             <div>
                 <strong>Your Claude intake link is ready.</strong>
-                <p class="help">Copy this whole link and paste it into Claude. Claude will decode it and build your website.</p>
+                <p class="help">Copy this whole link and paste it into Claude, or download a package with your answers and selected files.</p>
             </div>
             <div class="copy-box">
                 <textarea id="intakeLink" readonly></textarea>
@@ -613,6 +613,7 @@
             <div class="asset-list" id="assetList"></div>
             <div class="actions" style="position: static; padding: 0; background: transparent;">
                 <button type="button" class="secondary" id="downloadJsonButton">Download JSON backup</button>
+                <button type="button" class="secondary" id="downloadPackageButton">Download package</button>
                 <button type="button" class="primary" id="copyButton">Copy link</button>
             </div>
             <div class="status" id="status"></div>
@@ -674,6 +675,23 @@
                 .filter(Boolean);
         }
 
+        function selectedFiles() {
+            const labels = {
+                profile_image: "Portrait / headshot",
+                resume: "Resume / CV",
+                gallery1: "Gallery image 1",
+                gallery2: "Gallery image 2",
+                gallery3: "Gallery image 3",
+                gallery4: "Gallery image 4"
+            };
+            return Object.entries(labels)
+                .map(([name, label]) => {
+                    const file = fileFor(name);
+                    return file ? { label, fileName: safeFileName(file.name), path: `assets/${safeFileName(file.name)}`, file } : null;
+                })
+                .filter(Boolean);
+        }
+
         function workItem(index) {
             const title = value(`work${index}_title`);
             const url = value(`work${index}_url`);
@@ -722,6 +740,101 @@
             let binary = "";
             bytes.forEach((byte) => binary += String.fromCharCode(byte));
             return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+        }
+
+        const crcTable = (() => {
+            const table = new Uint32Array(256);
+            for (let i = 0; i < 256; i += 1) {
+                let c = i;
+                for (let k = 0; k < 8; k += 1) {
+                    c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+                }
+                table[i] = c >>> 0;
+            }
+            return table;
+        })();
+
+        function crc32(bytes) {
+            let crc = 0xffffffff;
+            bytes.forEach((byte) => {
+                crc = crcTable[(crc ^ byte) & 0xff] ^ (crc >>> 8);
+            });
+            return (crc ^ 0xffffffff) >>> 0;
+        }
+
+        function makeHeader(size) {
+            const bytes = new Uint8Array(size);
+            return { bytes, view: new DataView(bytes.buffer) };
+        }
+
+        function dosTimeParts(date) {
+            return {
+                time: (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2),
+                date: ((date.getFullYear() - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate()
+            };
+        }
+
+        function createZip(entries) {
+            const encoder = new TextEncoder();
+            const fileParts = [];
+            const centralParts = [];
+            let offset = 0;
+            const now = dosTimeParts(new Date());
+
+            entries.forEach((entry) => {
+                const nameBytes = encoder.encode(entry.name);
+                const data = entry.data;
+                const checksum = crc32(data);
+
+                const local = makeHeader(30);
+                local.view.setUint32(0, 0x04034b50, true);
+                local.view.setUint16(4, 20, true);
+                local.view.setUint16(6, 0, true);
+                local.view.setUint16(8, 0, true);
+                local.view.setUint16(10, now.time, true);
+                local.view.setUint16(12, now.date, true);
+                local.view.setUint32(14, checksum, true);
+                local.view.setUint32(18, data.length, true);
+                local.view.setUint32(22, data.length, true);
+                local.view.setUint16(26, nameBytes.length, true);
+                local.view.setUint16(28, 0, true);
+                fileParts.push(local.bytes, nameBytes, data);
+
+                const central = makeHeader(46);
+                central.view.setUint32(0, 0x02014b50, true);
+                central.view.setUint16(4, 20, true);
+                central.view.setUint16(6, 20, true);
+                central.view.setUint16(8, 0, true);
+                central.view.setUint16(10, 0, true);
+                central.view.setUint16(12, now.time, true);
+                central.view.setUint16(14, now.date, true);
+                central.view.setUint32(16, checksum, true);
+                central.view.setUint32(20, data.length, true);
+                central.view.setUint32(24, data.length, true);
+                central.view.setUint16(28, nameBytes.length, true);
+                central.view.setUint16(30, 0, true);
+                central.view.setUint16(32, 0, true);
+                central.view.setUint16(34, 0, true);
+                central.view.setUint16(36, 0, true);
+                central.view.setUint32(38, 0, true);
+                central.view.setUint32(42, offset, true);
+                centralParts.push(central.bytes, nameBytes);
+
+                offset += local.bytes.length + nameBytes.length + data.length;
+            });
+
+            const centralStart = offset;
+            const centralSize = centralParts.reduce((sum, part) => sum + part.length, 0);
+            const end = makeHeader(22);
+            end.view.setUint32(0, 0x06054b50, true);
+            end.view.setUint16(4, 0, true);
+            end.view.setUint16(6, 0, true);
+            end.view.setUint16(8, entries.length, true);
+            end.view.setUint16(10, entries.length, true);
+            end.view.setUint32(12, centralSize, true);
+            end.view.setUint32(16, centralStart, true);
+            end.view.setUint16(20, 0, true);
+            return new Blob([...fileParts, ...centralParts, end.bytes], { type: "application/zip" });
         }
 
         function buildAnswers() {
@@ -837,6 +950,38 @@
             link.download = "portfolio-site-answers.json";
             link.click();
             URL.revokeObjectURL(url);
+        });
+
+        document.getElementById("downloadPackageButton").addEventListener("click", async () => {
+            if (!latestAnswers) latestAnswers = buildAnswers();
+            const encoder = new TextEncoder();
+            const files = selectedFiles();
+            const instructions = [
+                "Portfolio site package",
+                "",
+                "1. Paste the generated intake link into Claude, or give Claude the answers.json file.",
+                "2. Ask Claude to build your portfolio site.",
+                "3. Copy every file in this zip's assets folder into the generated site's assets folder.",
+                "4. Preview locally, customize the copy/design, then publish with GitHub Pages.",
+                "",
+                "Selected files:",
+                ...(files.length ? files.map((item) => `- ${item.label}: ${item.path}`) : ["- No files selected."])
+            ].join("\n");
+            const entries = [
+                { name: "answers.json", data: encoder.encode(JSON.stringify(latestAnswers, null, 2)) },
+                { name: "README.txt", data: encoder.encode(instructions) }
+            ];
+            for (const item of files) {
+                entries.push({ name: item.path, data: new Uint8Array(await item.file.arrayBuffer()) });
+            }
+            const blob = createZip(entries);
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "portfolio-site-package.zip";
+            link.click();
+            URL.revokeObjectURL(url);
+            status.textContent = "Package downloaded.";
         });
 
         document.getElementById("resetButton").addEventListener("click", () => {

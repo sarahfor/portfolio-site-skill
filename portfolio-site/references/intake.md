@@ -10,9 +10,9 @@ Default to this flow for nontechnical users:
 2. The user fills out the form-based intake.
 3. The user selects resume and portrait/gallery files in upload boxes. Browser security means the form can capture filenames but cannot move the files.
 4. The form generates a `portfolio-site://build?answers=...` intake link.
-5. The user copies the link and pastes it into Codex.
-6. Decode the link with `scripts/build_site.py --intake-link`.
-7. After the site is generated, have the user copy the selected files into the generated `assets` folder. The builder creates `assets/ADD-YOUR-FILES-HERE.txt` listing exact filenames.
+5. The user copies the link and pastes it into Codex, or clicks `Download package` to save a zip with `answers.json`, selected files, and instructions.
+6. Decode the link with `scripts/build_site.py --intake-link`, or use the package's `answers.json` with `scripts/build_site.py --answers`.
+7. After the site is generated, have the user copy the selected files from the package's `assets` folder into the generated `assets` folder. The builder creates `assets/ADD-YOUR-FILES-HERE.txt` listing exact filenames.
 
 The form also offers a JSON download backup for cases where the copied link is too long or gets mangled.
 

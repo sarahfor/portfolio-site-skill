@@ -15,6 +15,7 @@ Use this skill to build a polished one-page personal site with the user's own po
 - A scaffold script in `scripts/scaffold_template.sh`
 - An intake-driven generator in `scripts/build_site.py`
 - Intake guidance in `references/intake.md`
+- A browser-only package download that bundles `answers.json`, selected resume/images, and instructions
 - A reusable signature-site pattern:
   cinematic hero, scroll cue, AI-inspector profile card, partner ticker, selected work/news cards, generic signature insight panel, moving field-image gallery with lightbox, and contact section
 
@@ -26,7 +27,7 @@ Use this skill to build a polished one-page personal site with the user's own po
 ${CODEX_HOME:-$HOME/.codex}/skills/portfolio-site/scripts/open_intake_form.sh
 ```
 
-Tell them to fill out the form, use the upload boxes for resume and portrait/gallery images, click `Generate my Codex link`, copy the generated `portfolio-site://build?...` link, and paste it into Codex. The form does not move files; after the site is generated, tell the user to copy the selected files into the generated site's `assets` folder. The builder writes `assets/ADD-YOUR-FILES-HERE.txt` with the exact filenames.
+Tell them to fill out the form, use the upload boxes for resume and portrait/gallery images, click `Generate my Codex link`, copy the generated `portfolio-site://build?...` link, and paste it into Codex. They can also click `Download package` to save a zip with `answers.json`, selected files under `assets/`, and a short README. The form does not publish or upload files; after the site is generated, tell the user to copy selected files into the generated site's `assets` folder. The builder writes `assets/ADD-YOUR-FILES-HERE.txt` with the exact filenames.
 
 2. When the user pastes a generated intake link, build from it:
 
