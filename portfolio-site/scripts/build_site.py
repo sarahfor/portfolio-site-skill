@@ -27,17 +27,31 @@ DEFAULTS = {
     "gallery_title": "Selected moments",
     "partners_kicker": "Clients, partners, and projects include:",
     "future_report": {
-        "title": "Add Your Signature Insight",
-        "subtitle": "Use this section to make your point visually.",
-        "lead": "Replace this with the trend, belief, result, or opportunity you want visitors to remember.",
+        "title": "A Brief History",
+        "subtitle": "of Your Field",
+        "lead": "Use this section to show the moments, shifts, or ideas that shaped the work you do now.",
         "eyebrow": "Your signal",
         "headline": "Make your point,<br><span>with a clear signal.</span>",
         "summary": "Add the context, audience, change, or outcome that explains why this matters.",
+        "milestones": [
+            {"year": "Start", "title": "First shift", "detail": "Add the early moment or idea that changed how your field works."},
+            {"year": "Next", "title": "Useful tool", "detail": "Add the tool, project, or practice that made the work more accessible."},
+            {"year": "Now", "title": "What matters", "detail": "Add what people should understand about the current moment."},
+        ],
         "metrics": [
             {"label": "Add metric 1", "detail": "What this number shows", "value": "Value"},
             {"label": "Add metric 2", "detail": "What this comparison means", "value": "Value"},
             {"label": "Add metric 3", "detail": "What changed or improved", "value": "Value"},
         ],
+    },
+    "learning_resource": {
+        "label": "Learning Lab",
+        "note": "hands on",
+        "brand": "Your Resource",
+        "title": "Useful starting point",
+        "description": "Add a course, guide, toolkit, article, or resource that helps visitors take the next step.",
+        "url": "#",
+        "cta": "Open resource",
     },
 }
 
@@ -256,6 +270,24 @@ def render_gallery(images, output_dir):
     )
 
 
+def render_timeline(milestones):
+    items = []
+    defaults = DEFAULTS["future_report"]["milestones"]
+    merged = (milestones or [])[:4]
+    merged = merged + defaults[len(merged):]
+    while len(merged) < 3:
+        merged.append(defaults[len(merged) % len(defaults)])
+    for item in merged[:4]:
+        items.append(
+            f'''<article class="signature-timeline-node">
+                        <span class="signature-timeline-year">{esc(item.get("year", "Now"))}</span>
+                        <h3>{esc(item.get("title", "Milestone"))}</h3>
+                        <p>{esc(item.get("detail", "Add one sentence about why this moment matters."))}</p>
+                    </article>'''
+        )
+    return "\n                    ".join(items)
+
+
 def write_asset_instructions(data, output_dir):
     files = data.get("image_asset_files") or []
     if not files:
@@ -299,6 +331,7 @@ def build_site(answers, output_dir):
     contact_email = data.get("contact_email", DEFAULTS["contact_email"])
     profile_src = asset_path(data.get("profile_image"), output_dir, "assets/portrait-placeholder.svg")
     future = {**DEFAULTS["future_report"], **(data.get("future_report") or {})}
+    learning = {**DEFAULTS["learning_resource"], **(data.get("learning_resource") or {})}
     metrics = future.get("metrics") or DEFAULTS["future_report"]["metrics"]
     metrics = (metrics + DEFAULTS["future_report"]["metrics"])[:3]
 
@@ -340,6 +373,7 @@ def build_site(answers, output_dir):
         "[FUTURE EYEBROW]": future.get("eyebrow", ""),
         "[FUTURE HEADLINE]": future.get("headline", ""),
         "[FUTURE SUMMARY]": future.get("summary", ""),
+        "[TIMELINE ITEMS]": render_timeline(future.get("milestones")),
         "[METRIC 1 LABEL]": metrics[0].get("label", ""),
         "[METRIC 1 DETAIL]": metrics[0].get("detail", ""),
         "[METRIC 1 VALUE]": metrics[0].get("value", ""),
@@ -359,9 +393,17 @@ def build_site(answers, output_dir):
         "[CONTACT HEADLINE]": data.get("contact_headline", f"Build something useful with {name.split()[0]}"),
         "[CONTACT DESCRIPTION]": data.get("contact_description", "For collaborations, workshops, speaking, or selected projects, reach out by email."),
         "[FOOTER NOTE]": data.get("footer_note", f"&copy; 2026 {name}. All rights reserved."),
+        "[LEARNING LABEL]": learning.get("label", "Learning Lab"),
+        "[LEARNING NOTE]": learning.get("note", "hands on"),
+        "[RESOURCE 1 BRAND]": learning.get("brand", "Your Resource"),
+        "[RESOURCE 1 TITLE]": learning.get("title", "Useful starting point"),
+        "[RESOURCE 1 DESCRIPTION]": learning.get("description", "Add a course, guide, toolkit, article, or resource that helps visitors take the next step."),
+        "[RESOURCE 1 URL]": learning.get("url", "#"),
+        "[RESOURCE 1 CTA]": learning.get("cta", "Open resource"),
     }
+    html_placeholders = {"[FOOTER NOTE]", "[FUTURE HEADLINE]", "[TIMELINE ITEMS]"}
     for placeholder, value in replacements.items():
-        text = text.replace(placeholder, esc(value) if placeholder != "[FOOTER NOTE]" else str(value))
+        text = text.replace(placeholder, str(value) if placeholder in html_placeholders else esc(value))
 
     text = text.replace('src="assets/portrait-placeholder.svg"', f'src="{esc(profile_src)}"')
     text = text.replace('srcset="assets/portrait-placeholder.svg 900w"', f'srcset="{esc(profile_src)} 900w"')
@@ -369,7 +411,6 @@ def build_site(answers, output_dir):
     text = replace_block(r'<div class="partnerships-logos ticker-group">.*?</div>\s*<div class="partnerships-logos ticker-group" aria-hidden="true">.*?</div>', text, render_partners(data.get("partners") or []))
     text = replace_block(r'(?s)<div class="news-grid">\s*(?:<article class="news-card.*?</article>\s*)+</div>', text, '<div class="news-grid">\n            ' + render_news_cards(data.get("work_items") or [], output_dir) + '\n        </div>')
     text = replace_block(r'(?s)<div class="future-image-track">\s*<div class="ticker-group">.*?</div>\s*<div class="ticker-group" aria-hidden="true">.*?</div>\s*</div>', text, '<div class="future-image-track">\n                    ' + render_gallery(data.get("gallery_images") or [], output_dir) + '\n                </div>')
-    text = re.sub(r'\n\s*<section class="learning-library-section".*?</section>\s*', '\n\n', text, count=1, flags=re.DOTALL)
 
     if code_demo.get("starter_code"):
         text = text.replace('print("Hello, World!")', esc(code_demo["starter_code"]))
