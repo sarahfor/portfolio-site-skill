@@ -3,7 +3,7 @@ name: claude-portfolio-site
 description: Build a one-page portfolio or professional personal website from a beginner-friendly form intake named Build a Personal Website. Use when someone downloads the skill, wants a polished form-based questionnaire, fills in what they do, audience, links such as Instagram, LinkedIn, press/work samples, partners/clients, email, uploads resume and image filenames through upload boxes, then copies a generated intake link into Claude. Produces a scaffolded HTML/CSS/JS site with cinematic hero, profile card, social links, partner ticker, work/features cards, tappable gallery, contact CTA, and instructions for adding selected files to the generated assets folder.
 ---
 
-# Claude Portfolio Site
+# Portfolio Site
 
 Use this skill to build a polished one-page personal site with the user's own positioning, links, work samples, and images.
 
@@ -17,14 +17,14 @@ Use this skill to build a polished one-page personal site with the user's own po
 - Intake guidance in `references/intake.md`
 - A browser-only package download that bundles `answers.json`, selected resume/images, and instructions
 - A reusable signature-site pattern:
-  cinematic hero, scroll cue, AI-inspector profile card, partner ticker, selected work/news cards, generic signature timeline, Learning Lab resource card, moving field-image gallery with lightbox, and contact section
+  cinematic hero, scroll cue, AI-inspector profile card, partner ticker, selected work/news cards, moving field-image gallery with lightbox, and contact section
 
 ## Default workflow
 
 1. For beginners, send them to the packaged intake form first:
 
 ```bash
-${CLAUDE_HOME:-$HOME/.claude}/skills/claude-portfolio-site/scripts/open_intake_form.sh
+${CODEX_HOME:-$HOME/.codex}/skills/claude-portfolio-site/scripts/open_intake_form.sh
 ```
 
 Tell them to fill out the form, use the upload boxes for resume and portrait/gallery images, click `Generate my Claude link`, copy the generated `claude-portfolio-site://build?...` link, and paste it into Claude. They can also click `Download package` to save a zip with `answers.json`, selected files under `assets/`, and a short README. The form does not publish or upload files; after the site is generated, tell the user to copy selected files into the generated site's `assets` folder. The builder writes `assets/ADD-YOUR-FILES-HERE.txt` with the exact filenames.
@@ -32,7 +32,7 @@ Tell them to fill out the form, use the upload boxes for resume and portrait/gal
 2. When the user pastes a generated intake link, build from it:
 
 ```bash
-python3 ${CLAUDE_HOME:-$HOME/.claude}/skills/claude-portfolio-site/scripts/build_site.py \
+python3 ${CODEX_HOME:-$HOME/.codex}/skills/claude-portfolio-site/scripts/build_site.py \
   --intake-link 'claude-portfolio-site://build?answers=...' \
   --output /absolute/path/to/new-site
 ```
@@ -40,7 +40,7 @@ python3 ${CLAUDE_HOME:-$HOME/.claude}/skills/claude-portfolio-site/scripts/build
 3. Use JSON only as a fallback when the user downloads the form's JSON backup or gives answers directly:
 
 ```bash
-python3 ${CLAUDE_HOME:-$HOME/.claude}/skills/claude-portfolio-site/scripts/build_site.py \
+python3 ${CODEX_HOME:-$HOME/.codex}/skills/claude-portfolio-site/scripts/build_site.py \
   --answers /absolute/path/to/answers.json \
   --output /absolute/path/to/new-site
 ```
@@ -48,7 +48,7 @@ python3 ${CLAUDE_HOME:-$HOME/.claude}/skills/claude-portfolio-site/scripts/build
 For a terminal interview:
 
 ```bash
-python3 ${CLAUDE_HOME:-$HOME/.claude}/skills/claude-portfolio-site/scripts/build_site.py \
+python3 ${CODEX_HOME:-$HOME/.codex}/skills/claude-portfolio-site/scripts/build_site.py \
   --interactive \
   --output /absolute/path/to/new-site
 ```
@@ -56,7 +56,7 @@ python3 ${CLAUDE_HOME:-$HOME/.claude}/skills/claude-portfolio-site/scripts/build
 4. Use the plain scaffold only when the user explicitly wants a blank template:
 
 ```bash
-${CLAUDE_HOME:-$HOME/.claude}/skills/claude-portfolio-site/scripts/scaffold_template.sh /absolute/path/to/new-site
+${CODEX_HOME:-$HOME/.codex}/skills/claude-portfolio-site/scripts/scaffold_template.sh /absolute/path/to/new-site
 ```
 
 5. Open the scaffolded `index.html` and polish any generated copy. If using the plain scaffold, replace bracketed placeholders such as:
@@ -87,12 +87,12 @@ If the site is static, opening `index.html` is enough. If testing browser behavi
 - Use 3-6 proof items for the work/features cards: press, client projects, talks, programs, articles, case studies, or flagship portfolio items.
 - Use 4-8 image assets for the gallery when available. Include a portrait/headshot first if the user provides one. For form-uploaded images, preserve the generated `assets/<filename>` references and remind the user to add the image files to the generated `assets` folder.
 - Do not reuse source-site-specific copy, photos, client names, emails, links, or personal names.
-- Keep the generic signature structure: cinematic hero, scroll cue, AI-inspector profile card, social link row, partner/client ticker, selected work cards, timeline section, field-image carousel, and contact card.
+- Keep the generic signature structure: cinematic hero, scroll cue, AI-inspector profile card, social link row, partner/client ticker, selected work cards, field-image carousel, and contact card.
 
 ## Template rules
 
 - Preserve the one-page structure unless the user asks for multiple pages.
-- Keep the hero, partner ticker, profile-inspector modal, gallery lightbox, timeline section, and contact interactions unless the user asks to remove them.
+- Keep the hero, partner ticker, profile-inspector modal, gallery lightbox, and contact interactions unless the user asks to remove them.
 - Replace placeholder logos and photos with the user's assets.
 - If the user wants the exact look with different content, edit the scaffolded template rather than rebuilding from scratch.
 - Keep class names and section structure unless redesigning deliberately. The CSS and JS behaviors assume those hooks exist.

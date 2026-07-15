@@ -587,77 +587,6 @@
                 </div>
             </fieldset>
 
-            <fieldset>
-                <legend>Timeline section</legend>
-                <p class="help">This powers the current-site style milestone section. Use it to add the short history, shifts, or moments behind your work.</p>
-                <div class="grid">
-                    <label>Section title
-                        <input name="future_title" placeholder="A Brief History">
-                    </label>
-                    <label>Short subtitle
-                        <input name="future_subtitle" placeholder="of Your Field">
-                    </label>
-                    <label class="wide">Main insight
-                        <textarea name="future_lead" placeholder="What should people understand about the changes, tools, or ideas shaping your work?"></textarea>
-                    </label>
-                    <label>Milestone 1
-                        <input name="milestone1_title" placeholder="First shift">
-                    </label>
-                    <label>Milestone 1 year / label
-                        <input name="milestone1_year" placeholder="Start">
-                    </label>
-                    <label class="wide">Milestone 1 note
-                        <textarea name="milestone1_detail" placeholder="One sentence about why this moment matters."></textarea>
-                    </label>
-                    <label>Milestone 2
-                        <input name="milestone2_title" placeholder="Useful tool">
-                    </label>
-                    <label>Milestone 2 year / label
-                        <input name="milestone2_year" placeholder="Next">
-                    </label>
-                    <label class="wide">Milestone 2 note
-                        <textarea name="milestone2_detail" placeholder="One sentence about what changed."></textarea>
-                    </label>
-                    <label>Milestone 3
-                        <input name="milestone3_title" placeholder="What matters now">
-                    </label>
-                    <label>Milestone 3 year / label
-                        <input name="milestone3_year" placeholder="Now">
-                    </label>
-                    <label class="wide">Milestone 3 note
-                        <textarea name="milestone3_detail" placeholder="One sentence about the current opportunity or takeaway."></textarea>
-                    </label>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend>Learning Lab</legend>
-                <p class="help">This becomes the resource card near the bottom of the site. Add a course, guide, toolkit, article, or favorite starting point.</p>
-                <div class="grid">
-                    <label>Section label
-                        <input name="learning_label" placeholder="Learning Lab">
-                    </label>
-                    <label>Small note
-                        <input name="learning_note" placeholder="hands on">
-                    </label>
-                    <label>Resource brand
-                        <input name="resource_brand" placeholder="Your Company, Toolkit, Publication">
-                    </label>
-                    <label>Resource title
-                        <input name="resource_title" placeholder="Useful starting point">
-                    </label>
-                    <label class="wide">Resource description
-                        <textarea name="resource_description" placeholder="One sentence about why this resource is useful."></textarea>
-                    </label>
-                    <label>Resource link
-                        <input name="resource_url" placeholder="https://...">
-                    </label>
-                    <label>Button text
-                        <input name="resource_cta" placeholder="Open resource">
-                    </label>
-                </div>
-            </fieldset>
-
             <div class="actions">
                 <button type="button" class="secondary" id="resetButton">Clear</button>
                 <button type="submit" class="primary">Generate my Claude link</button>
@@ -940,25 +869,6 @@
                 },
                 work_items: workItems,
                 gallery_images: galleryImages,
-                future_report: {
-                    title: value("future_title"),
-                    subtitle: value("future_subtitle"),
-                    lead: value("future_lead"),
-                    milestones: [1, 2, 3].map((index) => compactObject({
-                        year: value(`milestone${index}_year`),
-                        title: value(`milestone${index}_title`),
-                        detail: value(`milestone${index}_detail`)
-                    })).filter((item) => item.year || item.title || item.detail)
-                },
-                learning_resource: {
-                    label: value("learning_label"),
-                    note: value("learning_note"),
-                    brand: value("resource_brand"),
-                    title: value("resource_title"),
-                    description: value("resource_description"),
-                    url: value("resource_url"),
-                    cta: value("resource_cta")
-                },
                 image_asset_files: selectedAssetEntries()
             };
             return compactObject(answers);

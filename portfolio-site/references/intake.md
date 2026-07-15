@@ -28,7 +28,6 @@ Ask these first, and infer the rest when the user gives enough material.
 6. What 3-6 work samples, press mentions, programs, talks, articles, or projects should be featured?
 7. Which images should be used? Include a portrait/headshot, hero/background if available, and gallery images or screenshots.
 8. What contact email should the site use?
-9. What personal, industry, or field-level insight should power the signature section?
 
 ## Answer JSON shape
 
@@ -84,20 +83,7 @@ Ask these first, and infer the rest when the user gives enough material.
       "path": "/absolute/path/photo.jpg",
       "alt": "Person facilitating a workshop"
     }
-  ],
-  "future_report": {
-    "title": "Add Your Signature Insight",
-    "subtitle": "Use this section to make your point visually.",
-    "lead": "One sentence explaining the trend, belief, result, or opportunity you want visitors to remember.",
-    "eyebrow": "Your signal",
-    "headline": "Make your point,<br><span>with a clear signal.</span>",
-    "summary": "Short explanation of why this matters.",
-    "metrics": [
-      {"label": "Add metric 1", "detail": "What this number shows", "value": "Value"},
-      {"label": "Add metric 2", "detail": "What this comparison means", "value": "Value"},
-      {"label": "Add metric 3", "detail": "What changed or improved", "value": "Value"}
-    ]
-  }
+  ]
 }
 ```
 

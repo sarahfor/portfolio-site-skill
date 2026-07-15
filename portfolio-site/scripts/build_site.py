@@ -26,33 +26,6 @@ DEFAULTS = {
     "partner_categories": ["strategy", "education", "creative work", "community programs"],
     "gallery_title": "Selected moments",
     "partners_kicker": "Clients, partners, and projects include:",
-    "future_report": {
-        "title": "A Brief History",
-        "subtitle": "of Your Field",
-        "lead": "Use this section to show the moments, shifts, or ideas that shaped the work you do now.",
-        "eyebrow": "Your signal",
-        "headline": "Make your point,<br><span>with a clear signal.</span>",
-        "summary": "Add the context, audience, change, or outcome that explains why this matters.",
-        "milestones": [
-            {"year": "Start", "title": "First shift", "detail": "Add the early moment or idea that changed how your field works."},
-            {"year": "Next", "title": "Useful tool", "detail": "Add the tool, project, or practice that made the work more accessible."},
-            {"year": "Now", "title": "What matters", "detail": "Add what people should understand about the current moment."},
-        ],
-        "metrics": [
-            {"label": "Add metric 1", "detail": "What this number shows", "value": "Value"},
-            {"label": "Add metric 2", "detail": "What this comparison means", "value": "Value"},
-            {"label": "Add metric 3", "detail": "What changed or improved", "value": "Value"},
-        ],
-    },
-    "learning_resource": {
-        "label": "Learning Lab",
-        "note": "hands on",
-        "brand": "Your Resource",
-        "title": "Useful starting point",
-        "description": "Add a course, guide, toolkit, article, or resource that helps visitors take the next step.",
-        "url": "#",
-        "cta": "Open resource",
-    },
 }
 
 
@@ -270,24 +243,6 @@ def render_gallery(images, output_dir):
     )
 
 
-def render_timeline(milestones):
-    items = []
-    defaults = DEFAULTS["future_report"]["milestones"]
-    merged = (milestones or [])[:4]
-    merged = merged + defaults[len(merged):]
-    while len(merged) < 3:
-        merged.append(defaults[len(merged) % len(defaults)])
-    for item in merged[:4]:
-        items.append(
-            f'''<article class="signature-timeline-node">
-                        <span class="signature-timeline-year">{esc(item.get("year", "Now"))}</span>
-                        <h3>{esc(item.get("title", "Milestone"))}</h3>
-                        <p>{esc(item.get("detail", "Add one sentence about why this moment matters."))}</p>
-                    </article>'''
-        )
-    return "\n                    ".join(items)
-
-
 def write_asset_instructions(data, output_dir):
     files = data.get("image_asset_files") or []
     if not files:
@@ -330,10 +285,6 @@ def build_site(answers, output_dir):
     categories = (categories + DEFAULTS["partner_categories"])[:4]
     contact_email = data.get("contact_email", DEFAULTS["contact_email"])
     profile_src = asset_path(data.get("profile_image"), output_dir, "assets/portrait-placeholder.svg")
-    future = {**DEFAULTS["future_report"], **(data.get("future_report") or {})}
-    learning = {**DEFAULTS["learning_resource"], **(data.get("learning_resource") or {})}
-    metrics = future.get("metrics") or DEFAULTS["future_report"]["metrics"]
-    metrics = (metrics + DEFAULTS["future_report"]["metrics"])[:3]
 
     prompts = cta.get("prompts") or []
     prompts = (prompts + [
@@ -367,22 +318,6 @@ def build_site(answers, output_dir):
         "[CTA SUPPORTING LINE]": cta.get("supporting_line", "Share the work you are trying to move."),
         "[NEWS SECTION TITLE]": data.get("work_section_title", "Selected Work & Features"),
         "[GALLERY SECTION TITLE]": data.get("gallery_title", DEFAULTS["gallery_title"]),
-        "[FUTURE SECTION TITLE]": future.get("title", ""),
-        "[FUTURE SUBTITLE]": future.get("subtitle", ""),
-        "[FUTURE LEAD]": future.get("lead", ""),
-        "[FUTURE EYEBROW]": future.get("eyebrow", ""),
-        "[FUTURE HEADLINE]": future.get("headline", ""),
-        "[FUTURE SUMMARY]": future.get("summary", ""),
-        "[TIMELINE ITEMS]": render_timeline(future.get("milestones")),
-        "[METRIC 1 LABEL]": metrics[0].get("label", ""),
-        "[METRIC 1 DETAIL]": metrics[0].get("detail", ""),
-        "[METRIC 1 VALUE]": metrics[0].get("value", ""),
-        "[METRIC 2 LABEL]": metrics[1].get("label", ""),
-        "[METRIC 2 DETAIL]": metrics[1].get("detail", ""),
-        "[METRIC 2 VALUE]": metrics[1].get("value", ""),
-        "[METRIC 3 LABEL]": metrics[2].get("label", ""),
-        "[METRIC 3 DETAIL]": metrics[2].get("detail", ""),
-        "[METRIC 3 VALUE]": metrics[2].get("value", ""),
         "[PROFILE INSPECTOR CAPTION]": data.get("profile_inspector_caption", "Object detection software identifies objects in an image and estimates confidence scores for each match."),
         "[CODE SECTION LABEL]": code_demo.get("label", "Interactive lab"),
         "[CODE HEADLINE LINE 1]": code_demo.get("headline_line_1", "Try a small"),
@@ -393,15 +328,8 @@ def build_site(answers, output_dir):
         "[CONTACT HEADLINE]": data.get("contact_headline", f"Build something useful with {name.split()[0]}"),
         "[CONTACT DESCRIPTION]": data.get("contact_description", "For collaborations, workshops, speaking, or selected projects, reach out by email."),
         "[FOOTER NOTE]": data.get("footer_note", f"&copy; 2026 {name}. All rights reserved."),
-        "[LEARNING LABEL]": learning.get("label", "Learning Lab"),
-        "[LEARNING NOTE]": learning.get("note", "hands on"),
-        "[RESOURCE 1 BRAND]": learning.get("brand", "Your Resource"),
-        "[RESOURCE 1 TITLE]": learning.get("title", "Useful starting point"),
-        "[RESOURCE 1 DESCRIPTION]": learning.get("description", "Add a course, guide, toolkit, article, or resource that helps visitors take the next step."),
-        "[RESOURCE 1 URL]": learning.get("url", "#"),
-        "[RESOURCE 1 CTA]": learning.get("cta", "Open resource"),
     }
-    html_placeholders = {"[FOOTER NOTE]", "[FUTURE HEADLINE]", "[TIMELINE ITEMS]"}
+    html_placeholders = {"[FOOTER NOTE]"}
     for placeholder, value in replacements.items():
         text = text.replace(placeholder, str(value) if placeholder in html_placeholders else esc(value))
 
