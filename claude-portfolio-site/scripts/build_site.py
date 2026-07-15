@@ -29,37 +29,6 @@ DEFAULTS = {
 }
 
 
-DEFAULT_WORK = [
-    {
-        "title": "Featured project",
-        "source": "Organization",
-        "type": "Project",
-        "summary": "A concise sentence explaining the work and why it matters.",
-        "url": "#",
-        "cta": "View project",
-        "image_alt": "Project preview",
-    },
-    {
-        "title": "Press or publication",
-        "source": "Publication",
-        "type": "Feature",
-        "summary": "A concise sentence explaining the feature, article, talk, or public proof point.",
-        "url": "#",
-        "cta": "Read more",
-        "image_alt": "Feature preview",
-    },
-    {
-        "title": "Program or talk",
-        "source": "Community",
-        "type": "Program",
-        "summary": "A concise sentence explaining the audience, outcome, or collaboration.",
-        "url": "#",
-        "cta": "Explore work",
-        "image_alt": "Program preview",
-    },
-]
-
-
 SOCIAL_LABELS = {
     "linkedin": "LinkedIn",
     "instagram": "Instagram",
@@ -182,36 +151,6 @@ def render_partners(partners):
     )
 
 
-def render_news_cards(items, output_dir):
-    cards = []
-    merged = (items or [])[:4]
-    merged = merged + DEFAULT_WORK[len(merged):]
-    while len(merged) < 4:
-        merged.append(DEFAULT_WORK[len(merged) % len(DEFAULT_WORK)])
-    for item in merged[:4]:
-        image = asset_path(item.get("image"), output_dir, "assets/landscape-placeholder.svg")
-        url = item.get("url") or "#"
-        cards.append(
-            f'''<article class="news-card news-card-compact">
-                <a class="news-card-media" href="{esc(url)}" target="_blank" rel="noopener noreferrer">
-                    <img src="{esc(image)}" alt="{esc(item.get("image_alt") or item.get("title") or "Work preview")}" loading="lazy" decoding="async">
-                </a>
-                <div class="news-card-body">
-                    <div>
-                        <div class="news-meta">
-                            <span class="news-badge">{esc(item.get("type", "Work"))}</span>
-                            <span class="news-source">{esc(item.get("source", "Selected work"))}</span>
-                        </div>
-                        <h3><a href="{esc(url)}" target="_blank" rel="noopener noreferrer">{esc(item.get("title", "Featured work"))}</a></h3>
-                        <p>{esc(item.get("summary", "A concise sentence explaining why this work matters."))}</p>
-                    </div>
-                    <a class="news-link" href="{esc(url)}" target="_blank" rel="noopener noreferrer">{esc(item.get("cta", "View work"))}</a>
-                </div>
-            </article>'''
-        )
-    return "\n            ".join(cards)
-
-
 def render_gallery(images, output_dir):
     entries = images or []
     placeholders = [
@@ -316,7 +255,6 @@ def build_site(answers, output_dir):
         "[CONTACT EMAIL]": contact_email,
         "[PRIMARY CTA]": cta.get("primary", "Start a conversation"),
         "[CTA SUPPORTING LINE]": cta.get("supporting_line", "Share the work you are trying to move."),
-        "[NEWS SECTION TITLE]": data.get("work_section_title", "Selected Work & Features"),
         "[GALLERY SECTION TITLE]": data.get("gallery_title", DEFAULTS["gallery_title"]),
         "[PROFILE INSPECTOR CAPTION]": data.get("profile_inspector_caption", "Object detection software identifies objects in an image and estimates confidence scores for each match."),
         "[CODE SECTION LABEL]": code_demo.get("label", "Interactive lab"),
@@ -337,7 +275,6 @@ def build_site(answers, output_dir):
     text = text.replace('srcset="assets/portrait-placeholder.svg 900w"', f'srcset="{esc(profile_src)} 900w"')
     text = replace_block(r'<div class="social-links"[^>]*>.*?</div>', text, render_social_links(data.get("links", {}) or {}, output_dir))
     text = replace_block(r'<div class="partnerships-logos ticker-group">.*?</div>\s*<div class="partnerships-logos ticker-group" aria-hidden="true">.*?</div>', text, render_partners(data.get("partners") or []))
-    text = replace_block(r'(?s)<div class="news-grid">\s*(?:<article class="news-card.*?</article>\s*)+</div>', text, '<div class="news-grid">\n            ' + render_news_cards(data.get("work_items") or [], output_dir) + '\n        </div>')
     text = replace_block(r'(?s)<div class="future-image-track">\s*<div class="ticker-group">.*?</div>\s*<div class="ticker-group" aria-hidden="true">.*?</div>\s*</div>', text, '<div class="future-image-track">\n                    ' + render_gallery(data.get("gallery_images") or [], output_dir) + '\n                </div>')
 
     if code_demo.get("starter_code"):

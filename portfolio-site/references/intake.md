@@ -25,9 +25,9 @@ Ask these first, and infer the rest when the user gives enough material.
 3. What should people do next: email, book a call, download a resume, follow, hire, subscribe, or view work?
 4. Which links should appear? LinkedIn, Instagram, website, GitHub, newsletter/Substack, press, booking, or portfolio links.
 5. Which clients, partners, employers, communities, or credibility signals should appear in the ticker?
-6. What 3-6 work samples, press mentions, programs, talks, articles, or projects should be featured?
-7. Which images should be used? Include a portrait/headshot, hero/background if available, and gallery images or screenshots.
-8. What contact email should the site use?
+6. Which images should be used? Include a portrait/headshot, hero/background if available, and gallery images or screenshots.
+7. What contact email should the site use?
+8. What other sections might you want to ask your LLM to add later, such as case studies, press, services, testimonials, project pages, or a blog?
 
 ## Answer JSON shape
 
@@ -65,18 +65,6 @@ Ask these first, and infer the rest when the user gives enough material.
     "primary": "Start a conversation",
     "supporting_line": "Share the work you are trying to move."
   },
-  "work_items": [
-    {
-      "title": "Flagship program or press title",
-      "source": "Organization or publication",
-      "type": "Program build",
-      "summary": "One concise sentence about the work.",
-      "url": "https://example.com",
-      "cta": "Explore work",
-      "image": "/absolute/path/image.png",
-      "image_alt": "Short alt text"
-    }
-  ],
   "gallery_title": "In the room",
   "gallery_images": [
     {

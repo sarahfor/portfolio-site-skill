@@ -1,11 +1,11 @@
 ---
 name: portfolio-site
-description: Build a one-page portfolio or professional personal website from a beginner-friendly form intake named Build a Personal Website. Use when someone downloads the skill, wants a polished form-based questionnaire, fills in what they do, audience, links such as Instagram, LinkedIn, press/work samples, partners/clients, email, uploads resume and image filenames through upload boxes, then copies a generated intake link into Codex. Produces a scaffolded HTML/CSS/JS site with cinematic hero, profile card, social links, partner ticker, work/features cards, tappable gallery, contact CTA, and instructions for adding selected files to the generated assets folder.
+description: Build a one-page portfolio or professional personal website from a beginner-friendly form intake named Build a Personal Website. Use when someone downloads the skill, wants a polished form-based questionnaire, fills in what they do, audience, links such as Instagram, LinkedIn, partners/clients, email, uploads resume and image filenames through upload boxes, then copies a generated intake link into Codex. Produces a scaffolded HTML/CSS/JS site with a cinematic header, about/profile section, social links, brand/partner ticker, tappable gallery, contact card, and instructions for adding selected files to the generated assets folder.
 ---
 
 # Portfolio Site
 
-Use this skill to build a polished one-page personal site with the user's own positioning, links, work samples, and images.
+Use this skill to build a polished one-page personal site with the user's own positioning, links, brands/partners, images, and contact details.
 
 ## What this skill provides
 
@@ -17,7 +17,7 @@ Use this skill to build a polished one-page personal site with the user's own po
 - Intake guidance in `references/intake.md`
 - A browser-only package download that bundles `answers.json`, selected resume/images, and instructions
 - A reusable signature-site pattern:
-  cinematic hero, scroll cue, AI-inspector profile card, partner ticker, selected work/news cards, moving field-image gallery with lightbox, and contact section
+  cinematic header, about/profile section, social link row, brand/partner ticker, moving gallery with lightbox, and contact card
 
 ## Default workflow
 
@@ -67,7 +67,6 @@ ${CODEX_HOME:-$HOME/.codex}/skills/portfolio-site/scripts/scaffold_template.sh /
 - `[YOUR ABOUT PARAGRAPH]`
 - `[PARTNER CATEGORY 1]`
 - `[PROMPT 1]`
-- `[NEWS STORY 1 TITLE]`
 - `[CONTACT EMAIL]`
 
 6. Replace placeholder SVGs in `assets/` with the user's photos, screenshots, press images, or logo marks when available. Copy any uploaded resume/CV file into `assets/` using the filename listed in `ADD-YOUR-FILES-HERE.txt`.
@@ -82,12 +81,12 @@ If the site is static, opening `index.html` is enough. If testing browser behavi
 
 ## Intake-driven content rules
 
-- Ask for the user's name, what they do, who the site should attract, preferred CTA, contact email, public links, and image set.
+- Ask for the user's name, what they do, who the site should attract, preferred CTA, contact email, public links, brand/partner names, and image set.
 - Treat LinkedIn, Instagram, resume/CV upload, website, GitHub, Substack/newsletter, press, and booking links as optional social links. Do not show empty links.
-- Use 3-6 proof items for the work/features cards: press, client projects, talks, programs, articles, case studies, or flagship portfolio items.
+- Keep the default site intentionally basic. Encourage the user to ask their LLM to add optional sections after generation, such as case studies, press, services, testimonials, a blog, project pages, or a speaking section.
 - Use 4-8 image assets for the gallery when available. Include a portrait/headshot first if the user provides one. For form-uploaded images, preserve the generated `assets/<filename>` references and remind the user to add the image files to the generated `assets` folder.
 - Do not reuse source-site-specific copy, photos, client names, emails, links, or personal names.
-- Keep the generic signature structure: cinematic hero, scroll cue, AI-inspector profile card, social link row, partner/client ticker, selected work cards, field-image carousel, and contact card.
+- Keep the generic signature structure: cinematic header, about/profile section, social link row, partner/client ticker, field-image carousel, and contact card.
 
 ## Template rules
 

@@ -428,7 +428,7 @@
             <p>The workflow:</p>
             <ul class="steps">
                 <li><span>1</span><div>Install a simple portfolio skill.</div></li>
-                <li><span>2</span><div>Add your bio, links, projects, and images.</div></li>
+                <li><span>2</span><div>Add your bio, links, brands, partners, and images.</div></li>
                 <li><span>3</span><div>Ask Claude to generate the site.</div></li>
                 <li><span>4</span><div>Preview it locally.</div></li>
                 <li><span>5</span><div>Edit the copy and design.</div></li>
@@ -510,40 +510,14 @@
             </fieldset>
 
             <fieldset>
-                <legend>Proof</legend>
-                <p class="help">These become partner logos and selected work cards. Keep each item short.</p>
+                <legend>Brands and partners</legend>
+                <p class="help">These become the moving brand, partner, client, employer, community, or credibility ticker. Keep each item short.</p>
                 <div class="grid">
                     <label class="wide">Clients, partners, employers, or credibility signals
                         <input name="partners" placeholder="Client 1, Project 2, Community 3, Publication 4">
                         <span class="mini">Separate with commas.</span>
                     </label>
-                    <label>Featured work 1 title
-                        <input name="work1_title" placeholder="Flagship program or press title">
-                    </label>
-                    <label>Featured work 1 link
-                        <input name="work1_url" placeholder="https://...">
-                    </label>
-                    <label>Featured work 1 source
-                        <input name="work1_source" placeholder="Organization or publication">
-                    </label>
-                    <label>Featured work 1 type
-                        <input name="work1_type" placeholder="Program build, Press, Talk, Project">
-                    </label>
-                    <label class="wide">Featured work 1 summary
-                        <textarea name="work1_summary" placeholder="One sentence about why this work matters."></textarea>
-                    </label>
-                    <label>Featured work 2 title
-                        <input name="work2_title">
-                    </label>
-                    <label>Featured work 2 link
-                        <input name="work2_url">
-                    </label>
-                    <label>Featured work 3 title
-                        <input name="work3_title">
-                    </label>
-                    <label>Featured work 3 link
-                        <input name="work3_url">
-                    </label>
+                    <p class="wide help">After the basic site is generated, ask your LLM to add anything else you want, like case studies, press, services, testimonials, a blog, or a project section.</p>
                 </div>
             </fieldset>
 
@@ -681,23 +655,6 @@
                     return file ? { label, fileName: safeFileName(file.name), path: `assets/${safeFileName(file.name)}`, file } : null;
                 })
                 .filter(Boolean);
-        }
-
-        function workItem(index) {
-            const title = value(`work${index}_title`);
-            const url = value(`work${index}_url`);
-            const source = value(`work${index}_source`);
-            const type = value(`work${index}_type`);
-            const summary = value(`work${index}_summary`);
-            if (!title && !url && !source && !summary) return null;
-            return {
-                title,
-                url,
-                source,
-                type,
-                summary,
-                cta: "View work"
-            };
         }
 
         function compactObject(object) {
@@ -840,7 +797,6 @@
         }
 
         function buildAnswers() {
-            const workItems = [1, 2, 3].map(workItem).filter(Boolean);
             const galleryImages = [1, 2, 3, 4]
                 .map((index) => assetPathFor(`gallery${index}`))
                 .filter(Boolean)
@@ -867,7 +823,6 @@
                     primary: value("cta_primary"),
                     supporting_line: "Share the work you are trying to move."
                 },
-                work_items: workItems,
                 gallery_images: galleryImages,
                 image_asset_files: selectedAssetEntries()
             };
@@ -956,8 +911,8 @@
             const instructions = [
                 "Portfolio site package",
                 "",
-                "1. Paste the generated intake link into Claude, or give Claude the answers.json file.",
-                "2. Ask Claude to build your portfolio site.",
+                "1. Paste the generated intake link into Codex, or give Claude the answers.json file.",
+                "2. Ask Codex to build your portfolio site.",
                 "3. Copy every file in this zip's assets folder into the generated site's assets folder.",
                 "4. Preview locally, customize the copy/design, then publish with GitHub Pages.",
                 "",
